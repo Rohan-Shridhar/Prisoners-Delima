@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tournament Results</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 p-6">
+    <div class="max-w-4xl mx-auto bg-white p-8 rounded-lg shadow-md">
+        <h1 class="text-3xl font-bold text-center mb-6 text-gray-800">Tournament Leaderboard</h1>
+        
+        <div class="flex justify-center mb-8">
+            <button id="runTournamentButton" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg shadow-lg transition duration-300 ease-in-out transform hover:scale-105">
+                Run Tournament
+            </button>
+        </div>
+
+        <div class="overflow-x-auto">
+            <table id="leaderboardTable" class="min-w-full bg-white border border-gray-200 rounded-lg">
+                <thead>
+                    <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
+                        <th class="py-3 px-6 text-left rounded-tl-lg">Rank</th>
+                        <th class="py-3 px-6 text-left">Player Name</th>
+                        <th class="py-3 px-6 text-left rounded-tr-lg">Score</th>
+                    </tr>
+                </thead>
+                <tbody class="text-gray-700 text-sm font-light">
+                    <!-- Player data will be inserted here by JavaScript -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script type="module" src="pdg.js"></script>
+    <!-- Make sure to replace "your_script_name.js" with the actual name of your JavaScript file -->
+</body>
+</html>
