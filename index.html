@@ -3,41 +3,1211 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tournament Results</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <title>TOURNMENT</title>
+    <!-- Tailwind CSS CDN for easy styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        /* Custom styles for the body and overall layout */
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: "Inter", sans-serif;
+            background-color: #e0f2fe; /* Lighter, more vibrant blue background */
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* Align items to the top for better scrolling */
+            min-height: 100vh;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        /* Styling for the main game container */
+        .game-container {
+            background-color: #ffffff;
+            padding: 40px; /* Increased padding */
+            border-radius: 20px; /* More rounded corners */
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 10px 20px -5px rgba(0, 0, 0, 0.1); /* Stronger, layered shadow */
+            width: 100%;
+            max-width: 950px; /* Slightly wider max width */
+            display: flex;
+            flex-direction: column;
+            gap: 25px; /* Increased gap between sections */
+            position: relative; /* Needed for absolute positioning of strategy count */
+        }
+
+        /* Styling for input fields and selects */
+        input[type="number"], select {
+            padding: 12px 18px; /* More padding */
+            border: 1px solid #a7d9f7; /* Softer blue border */
+            border-radius: 10px; /* More rounded */
+            font-size: 1.05rem; /* Slightly larger font */
+            width: 100%;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        }
+        input[type="number"]:focus, select:focus {
+            outline: none;
+            border-color: #3b82f6; /* Blue focus border */
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.4); /* Softer, wider shadow on focus */
+        }
+
+        /* Styling for buttons */
+        button {
+            background-image: linear-gradient(to right, #6366f1, #8b5cf6); /* Indigo to Violet gradient */
+            color: white;
+            padding: 14px 30px; /* More padding */
+            border-radius: 10px; /* More rounded */
+            font-size: 1.15rem; /* Slightly larger font */
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out; /* Smoother transition for all properties */
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2); /* Stronger shadow */
+            letter-spacing: 0.5px; /* Slight letter spacing */
+            display: block; /* Ensure button takes full width for mx-auto to work */
+            background-size: 200% auto; /* For gradient animation */
+        }
+        button:hover {
+            background-position: right center; /* Move gradient on hover */
+            transform: translateY(-3px); /* More pronounced lift effect */
+            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.3); /* Stronger shadow on hover */
+        }
+        button:active {
+            transform: translateY(0); /* Press effect */
+            box-shadow: 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Canvas specific styling */
+        canvas {
+            border: 2px solid #bfdbfe; /* Lighter, subtle border for canvas */
+            background-color: #ffffff; /* White background for canvas */
+            display: block;
+            width: 100%; /* Make canvas responsive */
+            height: auto; /* Maintain aspect ratio */
+            border-radius: 14px; /* More rounded */
+            box-shadow: inset 0 3px 6px rgba(0, 0, 0, 0.08); /* Softer inner shadow */
+        }
+
+        /* Modal specific styling */
+        .modal {
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7); /* Darker overlay */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(5px); /* Blurred background */
+        }
+        .modal-content {
+            background-color: #ffffff;
+            padding: 35px; /* More padding */
+            border-radius: 16px; /* More rounded */
+            text-align: center;
+            max-width: 450px; /* Slightly wider */
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4); /* Stronger shadow */
+            position: relative;
+            animation: fadeInScale 0.3s ease-out forwards; /* Add animation */
+            border: 2px solid #93c5fd; /* Light blue border */
+        }
+        .explanation-modal-content {
+            max-width: 700px; /* Wider for explanations */
+            text-align: left; /* Align text left for readability */
+        }
+        @keyframes fadeInScale {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        .close-button {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 1.8rem; /* Larger close button */
+            font-weight: bold;
+            cursor: pointer;
+            color: #9ca3af; /* Lighter gray text */
+            transition: color 0.2s ease-in-out;
+        }
+        .close-button:hover {
+            color: #6b7280; /* Darker gray on hover */
+        }
+
+        /* Style for the new strategies count window */
+        .strategies-count-window {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: #bfdbfe; /* Light blue background */
+            color: #1e40af; /* Darker blue text */
+            padding: 10px 15px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 10; /* Ensure it's above other elements if needed */
+        }
+
+        /* Table styling for win/loss/draw summary */
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .results-table th, .results-table td {
+            padding: 12px 15px;
+            border: 1px solid #93c5fd; /* Medium blue border */
+            text-align: left;
+        }
+        .results-table th {
+            background-color: #dbeafe; /* Lighter blue background for headers */
+            font-weight: bold;
+            color: #1e40af; /* Darker blue text */
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+        .results-table tr:nth-child(even) {
+            background-color: #eff6ff; /* Alternating row background */
+        }
+        .results-table tr:hover {
+            background-color: #e0f2fe; /* Highlight on hover */
+        }
+
+        /* Checkbox styling */
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background-color: #e0f2fe; /* Light blue background for each checkbox item */
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1px solid #93c5fd;
+            cursor: pointer;
+            transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+        }
+        .checkbox-item:hover {
+            background-color: #bfdbfe;
+            border-color: #60a5fa;
+        }
+        .checkbox-item input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: #3b82f6; /* Primary blue for checkbox */
+            cursor: pointer;
+        }
+        .checkbox-item label {
+            font-size: 1rem;
+            color: #374151;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        /* Loading indicator styles */
+        .loading-spinner {
+            border: 4px solid #f3f3f3; /* Light grey */
+            border-top: 4px solid #3b82f6; /* Blue */
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
     </style>
 </head>
-<body class="bg-gray-100 p-6">
-    <div class="max-w-4xl mx-auto bg-white p-8 rounded-lg shadow-md">
-        <h1 class="text-3xl font-bold text-center mb-6 text-gray-800">Tournament Leaderboard</h1>
-        
-        <div class="flex justify-center mb-8">
-            <button id="runTournamentButton" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg shadow-lg transition duration-300 ease-in-out transform hover:scale-105">
-                Run Tournament
-            </button>
+<body class="flex flex-col items-center justify-center min-h-screen bg-indigo-50 p-6">
+    <div class="game-container">
+        <h1 class="text-5xl font-extrabold text-gray-900 text-center mb-8 tracking-tight">Iterated Prisoner's Dilemma Tournament</h1>
+
+        <!-- Strategies Count Window -->
+        <div id="strategiesCount" class="strategies-count-window">
+            Total Strategies: <span id="strategyCountValue">0</span>
         </div>
 
-        <div class="overflow-x-auto">
-            <table id="leaderboardTable" class="min-w-full bg-white border border-gray-200 rounded-lg">
-                <thead>
-                    <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
-                        <th class="py-3 px-6 text-left rounded-tl-lg">Rank</th>
-                        <th class="py-3 px-6 text-left">Player Name</th>
-                        <th class="py-3 px-6 text-left rounded-tr-lg">Score</th>
-                    </tr>
-                </thead>
-                <tbody class="text-gray-700 text-sm font-light">
-                    <!-- Player data will be inserted here by JavaScript -->
-                </tbody>
-            </table>
+        <!-- Game Settings Section -->
+        <div class="bg-indigo-100 p-8 rounded-xl shadow-inner border border-indigo-200">
+            <h2 class="text-3xl font-bold text-indigo-800 mb-6 text-center">Tournament Settings</h2>
+            <div class="flex flex-col mb-6">
+                <label for="numRoundsPerMatch" class="text-gray-700 font-semibold mb-2">Number of Rounds Per Match:</label>
+                <input type="number" id="numRoundsPerMatch" value="10" min="1" class="focus:ring-indigo-300">
+            </div>
+
+            <!-- Strategy Selection Checkboxes -->
+            <div class="mb-8">
+                <h3 class="text-xl font-bold text-gray-800 mb-4">Select Strategies for Tournament:</h3>
+                <div class="flex items-center mb-4">
+                    <input type="checkbox" id="selectAllStrategies" class="mr-2 w-5 h-5 accent-indigo-600 cursor-pointer">
+                    <label for="selectAllStrategies" class="text-lg font-semibold text-indigo-700 cursor-pointer">Select All</label>
+                </div>
+                <div id="strategyCheckboxes" class="checkbox-group">
+                    <!-- Checkboxes will be dynamically loaded here -->
+                </div>
+            </div>
+
+            <button id="startTournamentBtn" class="mt-4 max-w-sm mx-auto h-14">Start Tournament</button>
+        </div>
+
+        <!-- Tournament Results Section -->
+        <div id="tournamentResults" class="bg-white p-8 rounded-xl shadow-md border border-gray-200 hidden">
+            <h2 class="text-3xl font-bold text-gray-800 mb-6 text-center">Tournament Rankings</h2>
+            <div id="tournamentRankings" class="max-h-96 overflow-y-auto pr-4 mb-8">
+                <!-- Score-based rankings will be appended here -->
+            </div>
+            <h3 class="text-2xl font-bold text-gray-800 mb-4 text-center">Match Outcomes Summary</h3>
+            <div id="matchOutcomeSummary">
+                <!-- Win/Loss/Draw table will be appended here -->
+            </div>
+        </div>
+
+        <!-- Personality Score Graph Section -->
+        <div class="bg-white p-8 rounded-xl shadow-md border border-gray-200">
+            <h2 class="text-3xl font-bold text-gray-800 mb-6 text-center">Strategy Personality Scores (Cooperations - Defections)</h2>
+            <canvas id="personalityGraphCanvas"></canvas>
+            <button id="explainStrategyBtn" class="mt-8 max-w-sm mx-auto h-14">✨ Explain Selected Strategy ✨</button>
         </div>
     </div>
 
-    <script type="module" src="pdg.js"></script>
-    <!-- Make sure to replace "your_script_name.js" with the actual name of your JavaScript file -->
+    <!-- Custom Alert Modal -->
+    <div id="alertModal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-button" id="closeModalBtn">&times;</span>
+            <p id="alertMessage" class="text-xl font-semibold text-gray-800 mb-6"></p>
+            <button class="mt-4 bg-indigo-600 hover:bg-indigo-700 text-white py-3 px-6 rounded-lg text-lg" id="closeModalBtnBottom">Got It!</button>
+        </div>
+    </div>
+
+    <!-- Strategy Explanation Modal -->
+    <div id="explanationModal" class="modal hidden">
+        <div class="modal-content explanation-modal-content">
+            <span class="close-button" id="closeExplanationModalBtn">&times;</span>
+            <h3 class="text-2xl font-bold text-gray-800 mb-4 text-center">Strategy Explanation</h3>
+            <div id="explanationContent" class="text-gray-700 text-base leading-relaxed">
+                <!-- Explanation will be loaded here -->
+                <div class="loading-spinner hidden" id="explanationLoadingSpinner"></div>
+                <p id="explanationText"></p>
+            </div>
+            <button class="mt-6 bg-indigo-600 hover:bg-indigo-700 text-white py-3 px-6 rounded-lg text-lg" id="closeExplanationModalBtnBottom">Close</button>
+        </div>
+    </div>
+
+
+    <script>
+        // Constants for moves
+        const COOPERATE = 0;
+        const DEFECT = 1;
+
+        // Payoff matrix: [player1_move][player2_move] = [player1_payoff, player2_payoff]
+        // Moves: 0 = Cooperate, 1 = Defect
+        // Payoffs:
+        // (C, C): Both cooperate -> 3, 3 (Reward)
+        // (C, D): Player1 cooperates, Player2 defects -> 0, 5 (Sucker, Temptation)
+        // (D, C): Player1 defects, Player2 cooperates -> 5, 0 (Temptation, Sucker)
+        // (D, D): Both defect -> 1, 1 (Punishment)
+        const PAYOFF_MATRIX = [
+            // Player 2: Cooperate, Player 2: Defect
+            [[3, 3], [0, 5]], // Player 1: Cooperate
+            [[5, 0], [1, 1]]  // Player 1: Defect
+        ];
+
+        // Strategy functions
+        // Each strategy's 'logic' property is now a function that returns another function.
+        // The returned function is the actual strategy logic and can maintain its own state via closure.
+        const STRATEGIES = {
+            "Cooperate": {
+                name: "One man",
+                logic: () => {
+                    return (playerHistory, opponentHistory, currentRound, myCurrentScore, opponentCurrentScore) => COOPERATE;
+                }
+            },
+            "Defect": {
+                name: "Zero man",
+                logic: () => {
+                    return (playerHistory, opponentHistory, currentRound, myCurrentScore, opponentCurrentScore) => DEFECT;
+                }
+            },
+            "TitForTat": {
+                name: "Tit-for-Tat",
+                logic: () => {
+                    return (playerHistory, opponentHistory, currentRound, myCurrentScore, opponentCurrentScore) => {
+                        if (opponentHistory.length === 0) {
+                            return COOPERATE;
+                        }
+                        return opponentHistory[opponentHistory.length - 1];
+                    };
+                }
+            },
+            "GrimTrigger": {
+                name: "Punisher",
+                logic: () => {
+                    return (playerHistory, opponentHistory, currentRound, myCurrentScore, opponentCurrentScore) => {
+                        if (opponentHistory.includes(DEFECT)) {
+                            return DEFECT;
+                        }
+                        return COOPERATE;
+                    };
+                }
+            },
+            "TF2T": {
+                name: "Tit-for-Two-Tats",
+                logic: () => {
+                    return (playerHistory, opponentHistory, currentRound, myCurrentScore, opponentCurrentScore) => {
+                        if (opponentHistory.length >= 2 &&
+                            opponentHistory[opponentHistory.length - 1] === DEFECT &&
+                            opponentHistory[opponentHistory.length - 2] === DEFECT) {
+                            return DEFECT;
+                        }
+                        return COOPERATE;
+                    };
+                }
+            },
+            "TF3T": {
+                name: "Tit-for-Three-Tats",
+                logic: () => {
+                    return (playerHistory, opponentHistory, currentRound, myCurrentScore, opponentCurrentScore) => {
+                        if (opponentHistory.length >= 3 &&
+                            opponentHistory[opponentHistory.length - 1] === DEFECT &&
+                            opponentHistory[opponentHistory.length - 2] === DEFECT &&
+                            opponentHistory[opponentHistory.length - 3] === DEFECT) {
+                            return DEFECT;
+                        }
+                        return COOPERATE;
+                    };
+                }
+            },
+            "TwoTitForTat": {
+                name: "Two Tit for Tat",
+                logic: () => {
+                    let punishmentRoundsLeft = 0;
+                    return (playerHistory, opponentHistory, currentRound, myCurrentScore, opponentCurrentScore) => {
+                        if (punishmentRoundsLeft > 0) {
+                            punishmentRoundsLeft--;
+                            return DEFECT;
+                        }
+                        if (opponentHistory.length > 0 && opponentHistory[opponentHistory.length - 1] === DEFECT) {
+                            punishmentRoundsLeft = 1;
+                            return DEFECT;
+                        }
+                        return COOPERATE;
+                    };
+                }
+            },
+            "Johan": {
+                name: "Johan",
+                logic: () => {
+                    return (playerHistory, opponentHistory, currentRound, myCurrentScore, opponentCurrentScore) => {
+                        if (opponentHistory.length === 0) {
+                            return COOPERATE;
+                        }
+                        return opponentHistory[opponentHistory.length - 1] === COOPERATE ? DEFECT : COOPERATE;
+                    };
+                }
+            },
+            "OneForEvenMan": {
+                name: "One for Even Man",
+                logic: () => {
+                    return (playerHistory, opponentHistory, currentRound, myCurrentScore, opponentCurrentScore) => {
+                        if (currentRound % 2 === 0) {
+                            return COOPERATE; // Cooperate on even rounds
+                        } else {
+                            return DEFECT; // Defect on odd rounds
+                        }
+                    };
+                }
+            },
+            "ZeroForEvenMan": { // Cooperates only on odd rounds, defects on even
+                name: "Zero for Even Man",
+                logic: () => {
+                    return (playerHistory, opponentHistory, currentRound, myCurrentScore, opponentCurrentScore) => {
+                        if (currentRound % 2 !== 0) { // If current round is odd
+                            return COOPERATE; // Cooperate
+                        } else { // If current round is even
+                            return DEFECT; // Defect
+                        }
+                    };
+                }
+            },
+            "Player1100": { // New strategy: 1 1 0 0 pattern
+                name: "Player 1100",
+                logic: () => {
+                    const pattern = [COOPERATE, COOPERATE, DEFECT, DEFECT]; // 1 1 0 0
+                    return (playerHistory, opponentHistory, currentRound, myCurrentScore, opponentCurrentScore) => {
+                        const currentRoundIndex = currentRound - 1; // 0-indexed
+                        return pattern[currentRoundIndex % pattern.length];
+                    };
+                }
+            },
+            "Player0011": { // New strategy: 0 0 1 1 pattern
+                name: "Player 0011",
+                logic: () => {
+                    const pattern = [DEFECT, DEFECT, COOPERATE, COOPERATE]; // 0 0 1 1
+                    return (playerHistory, opponentHistory, currentRound, myCurrentScore, opponentCurrentScore) => {
+                        const currentRoundIndex = currentRound - 1; // 0-indexed
+                        return pattern[currentRoundIndex % pattern.length];
+                    };
+                }
+            },
+            "Player0111": { // New strategy: 0 1 1 1 pattern
+                name: "Player 0111",
+                logic: () => {
+                    const pattern = [DEFECT, COOPERATE, COOPERATE, COOPERATE]; // 0 1 1 1
+                    return (playerHistory, opponentHistory, currentRound, myCurrentScore, opponentCurrentScore) => {
+                        const currentRoundIndex = currentRound - 1; // 0-indexed
+                        return pattern[currentRoundIndex % pattern.length];
+                    };
+                }
+            },
+            "Player1000": { // New strategy: 1 0 0 0 pattern
+                name: "Player 1000",
+                logic: () => {
+                    const pattern = [COOPERATE, DEFECT, DEFECT, DEFECT]; // 1 0 0 0
+                    return (playerHistory, opponentHistory, currentRound, myCurrentScore, opponentCurrentScore) => {
+                        const currentRoundIndex = currentRound - 1; // 0-indexed
+                        return pattern[currentRoundIndex % pattern.length];
+                    };
+                }
+            },
+            "Joss": { // New strategy: Win-Stay, Lose-Shift (WSLS) / Pavlov
+                name: "Joss (Win-Stay, Lose-Shift)",
+                logic: () => {
+                    return (playerHistory, opponentHistory, currentRound, myCurrentScore, opponentCurrentScore) => {
+                        if (playerHistory.length === 0) {
+                            return COOPERATE; // Start by cooperating
+                        }
+
+                        const myLastMove = playerHistory[playerHistory.length - 1];
+                        const opponentLastMove = opponentHistory[opponentHistory.length - 1];
+
+                        // Get my payoff from the last round
+                        const myLastPayoff = PAYOFF_MATRIX[myLastMove][opponentLastMove][0]; // [0] for player's own payoff
+
+                        // If I won (got 3 or 5), stay with my last move
+                        if (myLastPayoff === 3 || myLastPayoff === 5) {
+                            return myLastMove;
+                        } else { // If I lost (got 0 or 1), shift (do the opposite)
+                            return myLastMove === COOPERATE ? DEFECT : COOPERATE;
+                        }
+                    };
+                }
+            },
+            "Columbus": { // New strategy: Defects forever if opponent defects two in a row
+                name: "Columbus",
+                logic: () => {
+                    let defectForever = false;
+                    return (playerHistory, opponentHistory, currentRound, myCurrentScore, opponentCurrentScore) => {
+                        if (defectForever) {
+                            return DEFECT; // Once triggered, always defect
+                        }
+
+                        // Check if opponent defected two in a row
+                        if (opponentHistory.length >= 2 &&
+                            opponentHistory[opponentHistory.length - 1] === DEFECT &&
+                            opponentHistory[opponentHistory.length - 2] === DEFECT) {
+                            defectForever = true;
+                            return DEFECT; // Defect immediately upon detection
+                        }
+
+                        return COOPERATE; // Otherwise, cooperate
+                    };
+                }
+            },
+            "Galileo": { // New strategy: Defects forever if opponent defects three in a row
+                name: "Galileo",
+                logic: () => {
+                    let defectForever = false;
+                    return (playerHistory, opponentHistory, currentRound, myCurrentScore, opponentCurrentScore) => {
+                        if (defectForever) {
+                            return DEFECT; // Once triggered, always defect
+                        }
+
+                        // Check if opponent defected three in a row
+                        if (opponentHistory.length >= 3 &&
+                            opponentHistory[opponentHistory.length - 1] === DEFECT &&
+                            opponentHistory[opponentHistory.length - 2] === DEFECT &&
+                            opponentHistory[opponentHistory.length - 3] === DEFECT) {
+                            defectForever = true;
+                            return DEFECT; // Defect immediately upon detection
+                        }
+
+                        return COOPERATE; // Otherwise, cooperate
+                    };
+                }
+            },
+            "Sharp": { // New strategy: Defects forever if opponent defects in the first round, else cooperates forever
+                name: "Sharp",
+                logic: () => {
+                    let defectForever = false;
+                    let firstRoundChecked = false; // To ensure the check only happens once
+
+                    return (playerHistory, opponentHistory, currentRound, myCurrentScore, opponentCurrentScore) => {
+                        if (!firstRoundChecked) {
+                            if (currentRound === 1 && opponentHistory.length === 0) {
+                                return COOPERATE;
+                            } else if (currentRound === 2 && opponentHistory.length === 1) {
+                                if (opponentHistory[0] === DEFECT) {
+                                    defectForever = true;
+                                }
+                                firstRoundChecked = true;
+                            }
+                        }
+
+                        if (defectForever) {
+                            return DEFECT;
+                        } else {
+                            return COOPERATE;
+                        }
+                    };
+                }
+            },
+            "Rayon": {
+                name: "Rayon",
+                logic: () => {
+                    return (playerHistory, opponentHistory, currentRound, myCurrentScore, opponentCurrentScore) => {
+                        // Phase 1: Cooperate for the first 10 rounds (currentRound 1 to 10)
+                        if (currentRound <= 10) {
+                            return COOPERATE; // 1 means Cooperate
+                        }
+
+                        // Phase 2: Defect on the 11th round (currentRound 11)
+                        if (currentRound === 11) {
+                            return DEFECT; // 0 means Defect
+                        }
+
+                        // --- Logic for rounds >= 12 onwards ---
+
+                        // Condition A (NEW PRIORITY): Opponent's Two Consecutive Defections
+                        // Checks if opponent defected in the last two rounds.
+                        // Requires opponentHistory to have at least 2 elements (i.e., currentRound >= 3)
+                        if (opponentHistory.length >= 2 &&
+                            opponentHistory[opponentHistory.length - 1] === DEFECT && // Opponent's move in (currentRound - 1)
+                            opponentHistory[opponentHistory.length - 2] === DEFECT) { // Opponent's move in (currentRound - 2)
+                            return DEFECT; // 0 means Defect
+                        }
+
+                        // Condition B (Original Java Priority 1): Rayon's Own Past Defection & Opponent's Retaliation
+                        // Checks if Rayon's move two rounds ago was DEFECT.
+                        // Requires playerHistory to have at least 2 of Rayon's own moves in history (i.e., currentRound >= 3)
+                        if (playerHistory.length >= 2 && playerHistory[playerHistory.length - 2] === DEFECT) { // Rayon's move in (currentRound - 2)
+                            // If Rayon defected two rounds ago, check opponent's last move
+                            // If opponent's last move was COOPERATE (1)
+                            if (opponentHistory.length >= 1 && opponentHistory[opponentHistory.length - 1] === COOPERATE) { // Opponent's move in (currentRound - 1)
+                                return DEFECT; // 0 means Defect
+                            } else { // If opponent's last move was DEFECT (0)
+                                return COOPERATE; // 1 means Cooperate
+                            }
+                        }
+
+                        // Condition C (Original Java Priority 3): Score-Based Decision
+                        if (myCurrentScore < opponentCurrentScore) {
+                            return DEFECT; // 0 means Defect
+                        }
+
+                        // Default: Return opponent's previous move (Tit-for-Tat)
+                        // This applies if none of the above conditions were met.
+                        // Requires opponentHistory to have at least 1 element (i.e., currentRound >= 2)
+                        if (opponentHistory.length > 0) {
+                            return opponentHistory[opponentHistory.length - 1];
+                        }
+
+                        // This line should theoretically not be reached given the conditions above
+                        // cover all cases for currentRound >= 2.
+                        // For currentRound = 1, it's handled by the `currentRound <= 10` condition.
+                        return COOPERATE; // Fallback, though likely unreachable
+                    };
+                }
+            },
+            "Sigma": { // New strategy: Cooperates for first 3 rounds, then defects if opponent's score is higher, else cooperates
+                name: "Sigma",
+                logic: () => {
+                    return (playerHistory, opponentHistory, currentRound, myCurrentScore, opponentCurrentScore) => {
+                        // First 3 rounds (currentRound 1, 2, 3)
+                        if (currentRound <= 3) {
+                            return COOPERATE; // 0 means Cooperate
+                        }
+
+                        // After the first 3 rounds
+                        if (opponentCurrentScore > myCurrentScore) {
+                            return DEFECT; // 1 means Defect
+                        } else {
+                            return COOPERATE; // 0 means Cooperate
+                        }
+                    };
+                }
+            },
+            "Sure": { // New strategy: Cooperates for first 2 rounds, then checks opponent's last 2 moves and score
+                name: "Sure",
+                logic: () => {
+                    return (playerHistory, opponentHistory, currentRound, myCurrentScore, opponentCurrentScore) => {
+                        // First 2 rounds (currentRound 1, 2)
+                        if (currentRound <= 2) {
+                            return COOPERATE; // 0 means Cooperate
+                        }
+
+                        // After the first 2 rounds
+                        // Check if opponent has defected any time in past 2 rounds
+                        const opponentDefectedInLastTwoRounds = (
+                            opponentHistory.length >= 1 && opponentHistory[opponentHistory.length - 1] === DEFECT
+                        ) || (
+                            opponentHistory.length >= 2 && opponentHistory[opponentHistory.length - 2] === DEFECT
+                        );
+
+                        if (opponentDefectedInLastTwoRounds) {
+                            // If yes, then check if opp has more score than itself
+                            if (opponentCurrentScore > myCurrentScore) {
+                                return DEFECT; // 1 means Defect
+                            } else {
+                                return COOPERATE; // 0 means Cooperate
+                            }
+                        } else {
+                            // If opponent did NOT defect in the past 2 rounds, cooperate (default behavior)
+                            return COOPERATE; // 0 means Cooperate
+                        }
+                    };
+                }
+            },
+            "Gradual": { // New strategy: Responds to Nth defection with N defections
+                name: "Gradual",
+                logic: () => {
+                    let opponentDefectionCount = 0; // Total number of times opponent has defected
+                    let punishmentRoundsRemaining = 0; // Number of defections Gradual still owes
+
+                    return (playerHistory, opponentHistory, currentRound, myCurrentScore, opponentCurrentScore) => {
+                        // If currently in a punishment phase, continue defecting
+                        if (punishmentRoundsRemaining > 0) {
+                            punishmentRoundsRemaining--;
+                            return DEFECT;
+                        }
+
+                        // If not in a punishment phase, check opponent's last move
+                        if (opponentHistory.length > 0) {
+                            const opponentLastMove = opponentHistory[opponentHistory.length - 1];
+
+                            if (opponentLastMove === DEFECT) {
+                                opponentDefectionCount++; // Increment total defection count for opponent
+                                punishmentRoundsRemaining = opponentDefectionCount; // Set punishment rounds to N
+                                // Start punishment immediately
+                                punishmentRoundsRemaining--;
+                                return DEFECT;
+                            }
+                        }
+
+                        // If not punishing and opponent cooperated or it's the very first round, cooperate
+                        return COOPERATE;
+                    };
+                }
+            },
+            "Random": {
+                name: "Random",
+                logic: () => {
+                    return (playerHistory, opponentHistory, currentRound, myCurrentScore, opponentCurrentScore) => Math.random() < 0.5 ? COOPERATE : DEFECT;
+                }
+            }
+        };
+
+        // Canvas for personality graph
+        let personalityGraphCanvas, personalityGraphCtx;
+
+        /**
+         * Initializes the personality graph canvas element and sets up its 2D rendering context.
+         * Also calls resizePersonalityCanvas to set initial dimensions.
+         */
+        const initializePersonalityCanvas = () => {
+            personalityGraphCanvas = document.getElementById('personalityGraphCanvas');
+            personalityGraphCtx = personalityGraphCanvas.getContext('2d');
+            resizePersonalityCanvas();
+        };
+
+        /**
+         * Resizes the personality graph canvas based on its parent container's width, maintaining an aspect ratio.
+         * The graph will be redrawn after tournament completion.
+         */
+        const resizePersonalityCanvas = () => {
+            if (personalityGraphCanvas && personalityGraphCtx) {
+                const parent = personalityGraphCanvas.parentElement;
+                personalityGraphCanvas.width = parent.clientWidth;
+                personalityGraphCanvas.height = Math.min(parent.clientWidth * 0.8, 600); // Adjusted for horizontal bars and more height
+            }
+        };
+
+        /**
+         * Draws the personality score graph on the dedicated canvas with horizontal bars.
+         * @param {Object} personalityScores - An object mapping strategy keys to their personality scores.
+         */
+        const drawPersonalityGraph = (personalityScores) => {
+            if (!personalityGraphCtx) return;
+
+            personalityGraphCtx.clearRect(0, 0, personalityGraphCanvas.width, personalityGraphCanvas.height);
+
+            // Draw background
+            personalityGraphCtx.fillStyle = '#f8fafc'; /* A very light blue-gray for the graph background */
+            personalityGraphCtx.fillRect(0, 0, personalityGraphCanvas.width, personalityGraphCanvas.height);
+
+            const strategies = Object.keys(personalityScores);
+            if (strategies.length === 0) {
+                personalityGraphCtx.fillStyle = '#6b7280';
+                personalityGraphCtx.font = '18px Inter, sans-serif';
+                personalityGraphCtx.textAlign = 'center';
+                personalityGraphCtx.textBaseline = 'middle';
+                personalityGraphCtx.fillText('No strategies selected for the tournament.', personalityGraphCanvas.width / 2, personalityGraphCanvas.height / 2);
+                return;
+            }
+
+            const padding = 40;
+            const labelAreaWidth = 150; // Space for strategy names on the left
+            const chartAreaWidth = personalityGraphCanvas.width - 2 * padding - labelAreaWidth; // Total width for bars
+            const chartAreaHeight = personalityGraphCanvas.height - 2 * padding;
+
+            // Sort strategies by personality score for better visualization (descending)
+            const sortedStrategies = strategies.sort((a, b) => personalityScores[b] - personalityScores[a]);
+
+            const barHeight = (chartAreaHeight / sortedStrategies.length) * 0.7; // 70% of available height per bar
+            const barGap = (chartAreaHeight / sortedStrategies.length) * 0.3; // 30% gap
+
+            // Find min/max scores for scaling the X-axis
+            const scores = Object.values(personalityScores);
+            const minScore = Math.min(0, ...scores);
+            const maxScore = Math.max(0, ...scores);
+            const scoreRange = maxScore - minScore;
+
+            // X-axis (score) scaling
+            const scaleX = chartAreaWidth / (scoreRange === 0 ? 1 : scoreRange);
+            const zeroLineX = padding + labelAreaWidth + (Math.abs(minScore) / (scoreRange === 0 ? 1 : scoreRange)) * chartAreaWidth;
+
+            // Draw zero line (vertical)
+            personalityGraphCtx.strokeStyle = '#9ca3af'; /* Gray for zero line */
+            personalityGraphCtx.lineWidth = 1;
+            personalityGraphCtx.beginPath();
+            personalityGraphCtx.moveTo(zeroLineX, padding);
+            personalityGraphCtx.lineTo(zeroLineX, personalityGraphCanvas.height - padding);
+            personalityGraphCtx.stroke();
+            personalityGraphCtx.fillStyle = '#374151';
+            personalityGraphCtx.font = '12px Inter, sans-serif';
+            personalityGraphCtx.textAlign = 'center';
+            personalityGraphCtx.textBaseline = 'top';
+            personalityGraphCtx.fillText('0', zeroLineX, personalityGraphCanvas.height - padding + 5);
+
+
+            // Draw bars
+            sortedStrategies.forEach((key, index) => {
+                const score = personalityScores[key];
+                const y = padding + (index * (barHeight + barGap)) + barGap / 2;
+                const barLength = Math.abs(score) * scaleX;
+                const x = score >= 0 ? zeroLineX : zeroLineX - barLength;
+
+                // Bar color: Green for positive, Red for negative
+                personalityGraphCtx.fillStyle = score >= 0 ? '#10B981' : '#EF4444'; /* Emerald Green / Red */
+                personalityGraphCtx.fillRect(x, y, barLength, barHeight);
+
+                // Strategy name label to the left of the bar
+                personalityGraphCtx.fillStyle = '#374151';
+                personalityGraphCtx.font = '14px Inter, sans-serif';
+                personalityGraphCtx.textAlign = 'right';
+                personalityGraphCtx.textBaseline = 'middle';
+                personalityGraphCtx.fillText(STRATEGIES[key].name, padding + labelAreaWidth - 10, y + barHeight / 2);
+
+                // Score value label at the end of the bar
+                personalityGraphCtx.font = '12px Inter, sans-serif';
+                personalityGraphCtx.fillStyle = '#1f2937';
+                personalityGraphCtx.textAlign = score >= 0 ? 'left' : 'right';
+                personalityGraphCtx.textBaseline = 'middle';
+                personalityGraphCtx.fillText(score.toFixed(0), score >= 0 ? x + barLength + 5 : x - 5, y + barHeight / 2);
+            });
+
+            // X-axis labels (min/max scores)
+            personalityGraphCtx.fillStyle = '#374151';
+            personalityGraphCtx.font = '12px Inter, sans-serif';
+            personalityGraphCtx.textBaseline = 'top';
+            if (maxScore > 0) {
+                personalityGraphCtx.textAlign = 'left';
+                personalityGraphCtx.fillText(maxScore.toFixed(0), zeroLineX + chartAreaWidth - (maxScore * scaleX) + 5, personalityGraphCanvas.height - padding + 5);
+            }
+            if (minScore < 0) {
+                personalityGraphCtx.textAlign = 'right';
+                personalityGraphCtx.fillText(minScore.toFixed(0), zeroLineX - (Math.abs(minScore) * scaleX) - 5, personalityGraphCanvas.height - padding + 5);
+            }
+        };
+
+
+        /**
+         * Simulates a single match between two strategies.
+         * @param {Function} player1StrategyInstance - The logic function for player 1.
+         * @param {Function} player2StrategyInstance - The logic function for player 2.
+         * @param {number} numRounds - The number of rounds for this match.
+         * @returns {Array<any>} - [player1_final_score, player2_final_score, match_outcome_string, p1_moves_history, p2_moves_history]
+         */
+        const simulateMatch = (player1StrategyInstance, player2StrategyInstance, numRounds) => {
+            let p1MatchScore = 0;
+            let p2MatchScore = 0;
+            let p1MovesHistory = [];
+            let p2MovesHistory = [];
+
+            for (let i = 1; i <= numRounds; i++) {
+                const p1Move = player1StrategyInstance(p1MovesHistory, p2MovesHistory, i, p1MatchScore, p2MatchScore);
+                const p2Move = player2StrategyInstance(p2MovesHistory, p1MovesHistory, i, p2MatchScore, p1MatchScore);
+
+                const [p1RoundScore, p2RoundScore] = PAYOFF_MATRIX[p1Move][p2Move];
+
+                p1MatchScore += p1RoundScore;
+                p2MatchScore += p2RoundScore;
+
+                p1MovesHistory.push(p1Move);
+                p2MovesHistory.push(p2Move);
+            }
+
+            let matchOutcome;
+            if (p1MatchScore > p2MatchScore) {
+                matchOutcome = 'p1_win';
+            } else if (p2MatchScore > p1MatchScore) {
+                matchOutcome = 'p2_win';
+            } else {
+                matchOutcome = 'draw';
+            }
+
+            return [p1MatchScore, p2MatchScore, matchOutcome, p1MovesHistory, p2MovesHistory];
+        };
+
+        /**
+         * Displays the final tournament rankings and match outcome summary.
+         * @param {Array<Object>} rankings - An array of objects with { name: string, score: number }
+         * @param {Object} matchResults - An object mapping strategy names to { wins: number, losses: number, draws: number }
+         */
+        const displayTournamentRankings = (rankings, matchResults) => {
+            const rankingsDiv = document.getElementById('tournamentRankings');
+            rankingsDiv.innerHTML = ''; // Clear previous score rankings
+
+            const ol = document.createElement('ol');
+            ol.className = 'list-decimal list-inside space-y-3 text-lg text-gray-700';
+
+            rankings.forEach((strategy, index) => {
+                const li = document.createElement('li');
+                li.className = 'bg-indigo-50 p-4 rounded-lg shadow-sm flex justify-between items-center';
+                li.innerHTML = `
+                    <span class="font-semibold text-indigo-800">${strategy.name}</span>
+                    <span class="font-bold text-indigo-900">${strategy.score}</span>
+                `;
+                ol.appendChild(li);
+            });
+            rankingsDiv.appendChild(ol);
+
+            // Display Match Outcome Summary
+            const matchOutcomeSummaryDiv = document.getElementById('matchOutcomeSummary');
+            matchOutcomeSummaryDiv.innerHTML = ''; // Clear previous match outcome summary
+
+            const table = document.createElement('table');
+            table.className = 'results-table';
+            table.innerHTML = `
+                <thead>
+                    <tr>
+                        <th>Strategy</th>
+                        <th>Wins</th>
+                        <th>Losses</th>
+                        <th>Draws</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            `;
+            const tbody = table.querySelector('tbody');
+
+            // Sort strategies alphabetically for the win/loss table for consistent display
+            const sortedStrategyNames = Object.keys(matchResults).sort((a, b) => {
+                const nameA = STRATEGIES[a].name.toUpperCase(); // ignore case
+                const nameB = STRATEGIES[b].name.toUpperCase(); // ignore case
+                if (nameA < nameB) return -1;
+                if (nameA > nameB) return 1;
+                return 0;
+            });
+
+            sortedStrategyNames.forEach(key => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${STRATEGIES[key].name}</td>
+                    <td>${matchResults[key].wins}</td>
+                    <td>${matchResults[key].losses}</td>
+                    <td>${matchResults[key].draws}</td>
+                `;
+                tbody.appendChild(row);
+            });
+            matchOutcomeSummaryDiv.appendChild(table);
+
+            document.getElementById('tournamentResults').classList.remove('hidden');
+        };
+
+        /**
+         * Orchestrates the entire tournament.
+         */
+        const startTournament = () => {
+            const numRoundsPerMatch = parseInt(document.getElementById('numRoundsPerMatch').value);
+            if (isNaN(numRoundsPerMatch) || numRoundsPerMatch <= 0) {
+                showAlert("Please enter a valid number of rounds per match (greater than 0).");
+                return;
+            }
+
+            const selectedStrategyCheckboxes = document.querySelectorAll('#strategyCheckboxes input[type="checkbox"]:checked');
+            const selectedStrategyKeys = Array.from(selectedStrategyCheckboxes).map(cb => cb.value);
+
+            if (selectedStrategyKeys.length === 0) {
+                showAlert("Please select at least one strategy to run the tournament.");
+                return;
+            }
+
+            // Clear previous results
+            document.getElementById('tournamentResults').classList.add('hidden');
+            drawPersonalityGraph({}); // Clear personality graph
+
+            const cumulativeScores = {};
+            const strategyMatchResults = {}; // To store wins, losses, draws for each strategy
+            const totalCooperations = {}; // To store total cooperations for personality score
+            const totalDefections = {};   // To store total defections for personality score
+
+            // Initialize cumulative scores, match results, and move counts for selected strategies
+            selectedStrategyKeys.forEach(key => {
+                cumulativeScores[key] = 0;
+                strategyMatchResults[key] = { wins: 0, losses: 0, draws: 0 };
+                totalCooperations[key] = 0;
+                totalDefections[key] = 0;
+            });
+
+            // Run matches: each selected strategy against every other selected strategy, including itself
+            for (let i = 0; i < selectedStrategyKeys.length; i++) {
+                for (let j = 0; j < selectedStrategyKeys.length; j++) {
+                    const player1Key = selectedStrategyKeys[i];
+                    const player2Key = selectedStrategyKeys[j];
+
+                    // Create fresh instances of strategy logic for each match
+                    const player1StrategyInstance = STRATEGIES[player1Key].logic();
+                    const player2StrategyInstance = STRATEGIES[player2Key].logic();
+
+                    const [p1MatchScore, p2MatchScore, matchOutcome, p1MovesHistory, p2MovesHistory] = simulateMatch(player1StrategyInstance, player2StrategyInstance, numRoundsPerMatch);
+
+                    cumulativeScores[player1Key] += p1MatchScore;
+                    cumulativeScores[player2Key] += p2MatchScore;
+
+                    // Update win/loss/draw counts
+                    if (matchOutcome === 'p1_win') {
+                        strategyMatchResults[player1Key].wins++;
+                        strategyMatchResults[player2Key].losses++;
+                    } else if (matchOutcome === 'p2_win') {
+                        strategyMatchResults[player1Key].losses++;
+                        strategyMatchResults[player2Key].wins++;
+                    } else { // draw
+                        strategyMatchResults[player1Key].draws++;
+                        strategyMatchResults[player2Key].draws++;
+                    }
+
+                    // Aggregate cooperation and defection counts for personality score
+                    p1MovesHistory.forEach(move => {
+                        if (move === COOPERATE) {
+                            totalCooperations[player1Key]++;
+                        } else {
+                            totalDefections[player1Key]++;
+                        }
+                    });
+                    p2MovesHistory.forEach(move => {
+                        if (move === COOPERATE) {
+                            totalCooperations[player2Key]++;
+                        } else {
+                            totalDefections[player2Key]++;
+                        }
+                    });
+                }
+            }
+
+            // Calculate personality scores
+            const personalityScores = {};
+            selectedStrategyKeys.forEach(key => {
+                personalityScores[key] = totalCooperations[key] - totalDefections[key];
+            });
+
+            // Prepare rankings for display (score-based)
+            const rankings = Object.keys(cumulativeScores).map(key => ({
+                name: STRATEGIES[key].name,
+                score: cumulativeScores[key]
+            }));
+
+            // Sort rankings by score in descending order
+            rankings.sort((a, b) => b.score - a.score);
+
+            // Display the tournament rankings and match outcome summary
+            displayTournamentRankings(rankings, strategyMatchResults);
+
+            // Draw the personality score graph
+            drawPersonalityGraph(personalityScores);
+        };
+
+        // Simple modal for alerts, replacing window.alert() to avoid browser pop-ups
+        const showAlert = (message) => {
+            const modal = document.getElementById('alertModal');
+            const modalMessage = document.getElementById('alertMessage');
+            const closeModalBtn = document.getElementById('closeModalBtn');
+            const closeModalBtnBottom = document.getElementById('closeModalBtnBottom'); // Get bottom button too
+
+            modalMessage.textContent = message;
+            modal.classList.remove('hidden');
+
+            const hideModal = () => {
+                modal.classList.add('hidden');
+            };
+
+            closeModalBtn.onclick = hideModal;
+            closeModalBtnBottom.onclick = hideModal; // Attach to both buttons
+
+            // Close if clicked outside the modal content
+            modal.onclick = (event) => {
+                if (event.target === modal) {
+                    hideModal();
+                }
+            };
+        };
+
+        // Override window.alert for this specific application to use the custom modal
+        window.alert = showAlert;
+
+        /**
+         * Fetches an explanation for a given strategy from the Gemini API.
+         * @param {string} strategyName - The name of the strategy to explain.
+         */
+        const getStrategyExplanation = async (strategyName) => {
+            const explanationModal = document.getElementById('explanationModal');
+            const explanationText = document.getElementById('explanationText');
+            const explanationLoadingSpinner = document.getElementById('explanationLoadingSpinner');
+
+            explanationText.textContent = ''; // Clear previous explanation
+            explanationLoadingSpinner.classList.remove('hidden'); // Show spinner
+            explanationModal.classList.remove('hidden'); // Show modal
+
+            const prompt = `Explain the Iterated Prisoner's Dilemma strategy called "${strategyName}". Describe its core logic, how it typically behaves, and its strengths and weaknesses in the context of the Iterated Prisoner's Dilemma game. Keep the explanation concise and easy to understand for someone learning about game theory.`;
+
+            let chatHistory = [];
+            chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+            const payload = { contents: chatHistory };
+            const apiKey = ""; // Canvas will automatically provide this in runtime
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const result = await response.json();
+
+                if (result.candidates && result.candidates.length > 0 &&
+                    result.candidates[0].content && result.candidates[0].content.parts &&
+                    result.candidates[0].content.parts.length > 0) {
+                    const text = result.candidates[0].content.parts[0].text;
+                    explanationText.textContent = text;
+                } else {
+                    explanationText.textContent = "Could not retrieve explanation. The model response was unexpected.";
+                    console.error("Gemini API response structure unexpected:", result);
+                }
+            } catch (error) {
+                explanationText.textContent = `Failed to fetch explanation: ${error.message}`;
+                console.error("Error calling Gemini API:", error);
+            } finally {
+                explanationLoadingSpinner.classList.add('hidden'); // Hide spinner
+            }
+        };
+
+        // Populate strategy checkboxes and set up event listeners when the DOM is fully loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            const strategyCountValue = document.getElementById('strategyCountValue');
+            strategyCountValue.textContent = Object.keys(STRATEGIES).length;
+
+            const strategyCheckboxesContainer = document.getElementById('strategyCheckboxes');
+            const selectAllCheckbox = document.getElementById('selectAllStrategies');
+            const explainStrategyBtn = document.getElementById('explainStrategyBtn');
+            const closeExplanationModalBtn = document.getElementById('closeExplanationModalBtn');
+            const closeExplanationModalBtnBottom = document.getElementById('closeExplanationModalBtnBottom');
+            const explanationModal = document.getElementById('explanationModal');
+
+
+            // Populate individual strategy checkboxes
+            for (const key in STRATEGIES) {
+                const checkboxItem = document.createElement('div');
+                checkboxItem.className = 'checkbox-item';
+
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.id = `strategy-${key}`;
+                checkbox.name = 'selectedStrategies';
+                checkbox.value = key;
+                checkbox.checked = true; // Default to all selected
+
+                const label = document.createElement('label');
+                label.htmlFor = `strategy-${key}`;
+                label.textContent = STRATEGIES[key].name;
+
+                checkboxItem.appendChild(checkbox);
+                checkboxItem.appendChild(label);
+                strategyCheckboxesContainer.appendChild(checkboxItem);
+
+                // Add event listener to individual checkboxes to update "Select All"
+                checkbox.addEventListener('change', () => {
+                    const allIndividualCheckboxes = document.querySelectorAll('#strategyCheckboxes input[type="checkbox"]');
+                    const allChecked = Array.from(allIndividualCheckboxes).every(cb => cb.checked);
+                    selectAllCheckbox.checked = allChecked;
+                });
+            }
+
+            // Set "Select All" to checked initially if all are default checked
+            selectAllCheckbox.checked = true;
+
+            // Add event listener for "Select All" checkbox
+            selectAllCheckbox.addEventListener('change', (event) => {
+                const isChecked = event.target.checked;
+                const allIndividualCheckboxes = document.querySelectorAll('#strategyCheckboxes input[type="checkbox"]');
+                allIndividualCheckboxes.forEach(cb => {
+                    cb.checked = isChecked;
+                });
+            });
+
+
+            document.getElementById('startTournamentBtn').addEventListener('click', startTournament);
+
+            // Event listener for the "Explain Selected Strategy" button
+            explainStrategyBtn.addEventListener('click', () => {
+                const selectedCheckboxes = document.querySelectorAll('#strategyCheckboxes input[type="checkbox"]:checked');
+                if (selectedCheckboxes.length === 0) {
+                    showAlert("Please select a strategy to explain.");
+                } else if (selectedCheckboxes.length > 1) {
+                    showAlert("Please select only ONE strategy to explain.");
+                } else {
+                    const selectedStrategyKey = selectedCheckboxes[0].value;
+                    getStrategyExplanation(STRATEGIES[selectedStrategyKey].name);
+                }
+            });
+
+            // Close explanation modal buttons
+            const hideExplanationModal = () => {
+                explanationModal.classList.add('hidden');
+            };
+            closeExplanationModalBtn.onclick = hideExplanationModal;
+            closeExplanationModalBtnBottom.onclick = hideExplanationModal;
+            explanationModal.onclick = (event) => {
+                if (event.target === explanationModal) {
+                    hideExplanationModal();
+                }
+            };
+
+            // Initialize personality canvas and set up resize listener
+            initializePersonalityCanvas();
+            window.addEventListener('resize', resizePersonalityCanvas);
+        });
+    </script>
 </body>
 </html>
