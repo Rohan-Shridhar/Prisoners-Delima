@@ -46,10 +46,10 @@ public class Game_theory {
     }
     private static int setRounds() {
         System.out.print("Number of rounds: ");
-        //int r=sc.nextInt();
-        int r=random_int_chooser(586);
-        //int r=15644;
-        System.out.println(r);
+        int r=sc.nextInt();
+        //int r=random_int_chooser(586);
+        //int r=100;
+        //System.out.println(r);
         return r;
     }
     public  static void input(int round,int x,int y){

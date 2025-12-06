@@ -1,0 +1,105 @@
+### Descriptions of Tournament Strategies
+
+**1. One man (Cooperate):**
+This is the most straightforward and optimistic strategy. It always chooses to cooperate in every single round, no matter what the
+opponent does. It is a purely "nice" strategy that never initiates a defection, hoping for mutual cooperation.
+
+**2. Zero man (Defect):**
+The polar opposite of "One man," this strategy is purely antagonistic. It defects in every single round from the very beginning,
+regardless of the opponent's actions. It aims to maximize its own score by exploiting cooperative players, even at the cost of
+mutual punishment against other defectors.
+
+**3. Tit-for-Tat:**
+A famous and historically successful strategy, Tit-for-Tat is both forgiving and retaliatory. It begins by cooperating in the first
+round. For every subsequent round, it simply copies the opponent's move from the previous round. If the opponent cooperates, it
+cooperates; if the opponent defects, it defects in return.
+
+**4. Punisher (Grim Trigger):**
+This strategy is cooperative but has an unforgiving memory. It starts by cooperating and will continue to do so as long as the
+opponent cooperates. However, the very first time the opponent defects, this strategy will "trigger" and defect for the rest of the
+entire match, never cooperating again.
+
+**5. Tit-for-Two-Tats:**
+A more forgiving version of Tit-for-Tat, this strategy gives the opponent a second chance. It will only defect if the opponent has
+defected in the last two consecutive rounds. A single defection from the opponent is tolerated, but two in a row will provoke a
+defection in response.
+
+**6. Tit-for-Three-Tats:**
+This is an even more lenient strategy than Tit-for-Two-Tats. It patiently cooperates until the opponent defects for three
+consecutive rounds. Only after a pattern of three straight defections will it retaliate by defecting.
+
+**7. Two Tit for Tat:**
+This strategy is a variation of Tit-for-Tat that punishes a defection more severely. When an opponent defects, this strategy will
+retaliate by defecting for the next two rounds. It starts by cooperating and only defects as a two-round punishment for each of the
+opponent's defections.
+
+**8. Johan:**
+This strategy acts as a direct counter to a simple Tit-for-Tat player. It starts by cooperating and then, for every subsequent
+round, it does the opposite of what the opponent did in the previous round. If the opponent cooperated, it defects; if the opponent
+defected, it cooperates.
+
+**9. One for Even Man:**
+This is a simple, predictable, and non-adaptive strategy. It defects on odd-numbered rounds (1, 3, 5, etc.) and cooperates on
+even-numbered rounds (2, 4, 6, etc.). Its moves are based solely on the round number, not on the opponent's behavior.
+
+**10. Zero for Even Man:**
+The inverse of "One for Even Man," this strategy also follows a predictable, non-adaptive pattern. It cooperates on odd-numbered
+rounds (1, 3, 5, etc.) and defects on even-numbered rounds (2, 4, 6, etc.), ignoring the opponent's actions entirely.
+
+**11. Player 1100:**
+This is a pattern-based strategy that is not reactive to its opponent. It follows a repeating four-round cycle: Cooperate,
+Cooperate, Defect, Defect. This pattern continues indefinitely throughout the match.
+
+**12. Player 0011:**
+The reverse of Player 1100, this strategy also follows a fixed, repeating four-round cycle. Its pattern is: Defect, Defect,
+Cooperate, Cooperate. It does not adapt its behavior based on the opponent's moves.
+
+**13. Player 0111:**
+This is another pattern-based strategy that repeats a four-round sequence. It begins with a defection and then cooperates for the
+next three rounds (Defect, Cooperate, Cooperate, Cooperate). This cycle repeats regardless of the opponent's actions.
+
+**14. Player 1000:**
+The inverse of Player 0111, this strategy follows a fixed four-round pattern of one cooperation followed by three defections
+(Cooperate, Defect, Defect, Defect). It is not a reactive strategy and sticks to its sequence.
+
+**15. Joss (Win-Stay, Lose-Shift):**
+Also known as Pavlov, this strategy bases its decisions on its own success. It starts by cooperating. If it "wins" a round (earning
+a high payoff of 3 or 5 points), it will repeat its last move. If it "loses" (earning a low payoff of 0 or 1 point), it will switch
+its move for the next round.
+
+**16. Columbus:**
+This strategy is a variation of the "Punisher" or "Grim Trigger" concept. It cooperates by default, but if it detects that the
+opponent has defected for two consecutive rounds, it will switch to defecting for the remainder of the match.
+
+**17. Galileo:**
+Similar to Columbus but more tolerant, this strategy also cooperates by default. It will only switch to a permanent state of
+defection if the opponent defects for three consecutive rounds. It is more forgiving of isolated or paired defections.
+
+**18. Sharp:**
+This strategy makes a critical judgment based on the very first interaction. It starts by cooperating. If the opponent defects in the
+first round, "Sharp" will defect for every single subsequent round. If the opponent cooperates in the first round, "Sharp" will
+cooperate for the rest of the match.
+
+**19. Rayon:**
+This is a complex, multi-phase strategy. It cooperates for the first 10 rounds, then defects on round 11. Afterwards, it enters a
+reactive phase where it defects if the opponent has defected twice in a row, defects if its own score is lower, and otherwise plays
+a mix of retaliatory and forgiving moves based on recent history.
+
+**20. Sigma:**
+This strategy has an initial cooperative phase, cooperating for the first three rounds. After that, its logic is simple: it checks
+the scores. If the opponent's score is higher than its own, it will defect. Otherwise, it will cooperate.
+
+**21. Sure:**
+This strategy begins by cooperating for the first two rounds to test the waters. After that, it checks if the opponent has defected
+in either of the last two rounds. If so, it then checks if the opponent's score is higher than its own and defects if it is. In all
+other cases (if the opponent has been cooperative), it will cooperate.
+
+**22. Gradual:**
+This strategy is forgiving at first but its punishments escalate over time. It starts by cooperating. When the opponent defects for
+the Nth time, "Gradual" retaliates by defecting for N rounds, after which it returns to cooperating. Each subsequent defection from
+the opponent results in a longer punishment phase.
+
+**23. Random:**
+As its name implies, this strategy makes its decision by flipping a coin. In every round, it has a 50% chance of cooperating and a
+50% chance of defecting. Its behavior is completely unpredictable and is not influenced by the opponent's actions or the history of
+the game.
