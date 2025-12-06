@@ -223,15 +223,15 @@ public class Decision {
             return 1;
     }
     public static int Joss(int[][] choices,int player_no,int round){//good player
-        if(round==0){
-            return 1;
-        }
-        int player=player_no==1?0:1;
-        if(choices[player][round-1]==1){
-            return choices[player_no][round-1];
-        }
-        else{
-            return (choices[player_no][round-1]==0?1:0);
-        }
+    if(round==0){
+        return 1;
     }
+    int player=player_no==1?0:1;
+    if(choices[player][round-1]==1){
+        return choices[player_no][round-1];
+    }
+    else{
+        return (choices[player_no][round-1]==0?1:0);
+    }
+}
 }

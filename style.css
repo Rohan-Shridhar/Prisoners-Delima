@@ -1,0 +1,221 @@
+/* Custom styles for the body and overall layout */
+body {
+    font-family: "Inter", sans-serif;
+    background-color: #e0f2fe; /* Lighter, more vibrant blue background */
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Align items to the top for better scrolling */
+    min-height: 100vh;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* Styling for the main game container */
+.game-container {
+    background-color: #ffffff;
+    padding: 40px; /* Increased padding */
+    border-radius: 20px; /* More rounded corners */
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 10px 20px -5px rgba(0, 0, 0, 0.1); /* Stronger, layered shadow */
+    width: 100%;
+    max-width: 950px; /* Slightly wider max width */
+    display: flex;
+    flex-direction: column;
+    gap: 25px; /* Increased gap between sections */
+    position: relative; /* Needed for absolute positioning of strategy count */
+}
+
+/* Styling for input fields and selects */
+input[type="number"], select {
+    padding: 12px 18px; /* More padding */
+    border: 1px solid #a7d9f7; /* Softer blue border */
+    border-radius: 10px; /* More rounded */
+    font-size: 1.05rem; /* Slightly larger font */
+    width: 100%;
+    box-sizing: border-box;
+    transition: border-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+input[type="number"]:focus, select:focus {
+    outline: none;
+    border-color: #3b82f6; /* Blue focus border */
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.4); /* Softer, wider shadow on focus */
+}
+
+/* Styling for buttons */
+button {
+    background-image: linear-gradient(to right, #6366f1, #8b5cf6); /* Indigo to Violet gradient */
+    color: white;
+    padding: 14px 30px; /* More padding */
+    border-radius: 10px; /* More rounded */
+    font-size: 1.15rem; /* Slightly larger font */
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out; /* Smoother transition for all properties */
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2); /* Stronger shadow */
+    letter-spacing: 0.5px; /* Slight letter spacing */
+    display: block; /* Ensure button takes full width for mx-auto to work */
+    background-size: 200% auto; /* For gradient animation */
+}
+button:hover {
+    background-position: right center; /* Move gradient on hover */
+    transform: translateY(-3px); /* More pronounced lift effect */
+    box-shadow: 0 12px 20px rgba(0, 0, 0, 0.3); /* Stronger shadow on hover */
+}
+button:active {
+    transform: translateY(0); /* Press effect */
+    box-shadow: 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Canvas specific styling */
+canvas {
+    border: 2px solid #bfdbfe; /* Lighter, subtle border for canvas */
+    background-color: #ffffff; /* White background for canvas */
+    display: block;
+    width: 100%; /* Make canvas responsive */
+    height: auto; /* Maintain aspect ratio */
+    border-radius: 14px; /* More rounded */
+    box-shadow: inset 0 3px 6px rgba(0, 0, 0, 0.08); /* Softer inner shadow */
+}
+
+/* Modal specific styling */
+.modal {
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7); /* Darker overlay */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(5px); /* Blurred background */
+}
+.modal-content {
+    background-color: #ffffff;
+    padding: 35px; /* More padding */
+    border-radius: 16px; /* More rounded */
+    text-align: center;
+    max-width: 450px; /* Slightly wider */
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4); /* Stronger shadow */
+    position: relative;
+    animation: fadeInScale 0.3s ease-out forwards; /* Add animation */
+    border: 2px solid #93c5fd; /* Light blue border */
+}
+.explanation-modal-content {
+    max-width: 700px; /* Wider for explanations */
+    text-align: left; /* Align text left for readability */
+}
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+.close-button {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 1.8rem; /* Larger close button */
+    font-weight: bold;
+    cursor: pointer;
+    color: #9ca3af; /* Lighter gray text */
+    transition: color 0.2s ease-in-out;
+}
+.close-button:hover {
+    color: #6b7280; /* Darker gray on hover */
+}
+
+/* Style for the new strategies count window */
+.strategies-count-window {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background-color: #bfdbfe; /* Light blue background */
+    color: #1e40af; /* Darker blue text */
+    padding: 10px 15px;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-weight: bold;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 10; /* Ensure it's above other elements if needed */
+}
+
+/* Table styling for win/loss/draw summary */
+.results-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+.results-table th, .results-table td {
+    padding: 12px 15px;
+    border: 1px solid #93c5fd; /* Medium blue border */
+    text-align: left;
+}
+.results-table th {
+    background-color: #dbeafe; /* Lighter blue background for headers */
+    font-weight: bold;
+    color: #1e40af; /* Darker blue text */
+    text-transform: uppercase;
+    font-size: 0.9rem;
+}
+.results-table tr:nth-child(even) {
+    background-color: #eff6ff; /* Alternating row background */
+}
+.results-table tr:hover {
+    background-color: #e0f2fe; /* Highlight on hover */
+}
+
+/* Checkbox styling */
+.checkbox-group {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 10px;
+    margin-top: 15px;
+}
+.checkbox-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-color: #e0f2fe; /* Light blue background for each checkbox item */
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid #93c5fd;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+}
+.checkbox-item:hover {
+    background-color: #bfdbfe;
+    border-color: #60a5fa;
+}
+.checkbox-item input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: #3b82f6; /* Primary blue for checkbox */
+    cursor: pointer;
+}
+.checkbox-item label {
+    font-size: 1rem;
+    color: #374151;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+/* Loading indicator styles */
+.loading-spinner {
+    border: 4px solid #f3f3f3; /* Light grey */
+    border-top: 4px solid #3b82f6; /* Blue */
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    animation: spin 1s linear infinite;
+    margin: 20px auto;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
