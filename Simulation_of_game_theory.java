@@ -63,7 +63,7 @@ public class Simulation_of_game_theory {
             }
         }
         System.out.println();
-        System.out.println();
+        System.out.println("WINS AND LOSES:");
         for(int i=0;i<players_count;i++){
             System.out.println();
             System.out.print(player_id[i]+"....."+player_wins[i]+"....."+player_loses[i]);

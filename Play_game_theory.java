@@ -5,7 +5,10 @@ import java.util.Scanner;
 public class Play_game_theory {
     public static Scanner sc=new Scanner(System.in);
     public static void main(String[] args) {
-        String[] players={"One_man","Zero_man","One_for_even_man","Zero_for_even_man","Tic_for_tac","Punishner","Sure","Player_1100","Player_0011","Alpha","Delta","Sigma","Tic_for_2_tac","Colombus","Joss","Johan","Tic_for_3_tac","Galileo","Sharp","Rayon","Gradual","Two_tic_for_tac","Random_man"};
+        String[] players={"One_man","Zero_man","One_for_even_man","Zero_for_even_man",
+        "Tic_for_tac","Punishner","Sure","Player_1100","Player_0011","Alpha","Delta",
+        "Sigma","Tic_for_2_tac","Colombus","Joss","Johan","Tic_for_3_tac","Galileo",
+        "Sharp","Rayon","Gradual","Two_tic_for_tac","Random_man"};
         int[] player=new int[2];
         for(int k=0;k<2;k++){
             if(k==0){
@@ -18,6 +21,7 @@ public class Play_game_theory {
             //player[k]=k==0?15:sc.nextInt();
             //player[k]=k==0?0:Game_theory.random_int_chooser(16);
             //System.out.println(player[k]);
+            System.out.print("Player "+(k+1)+" :");
             player[k]=sc.nextInt();
         }
         int[] choice=new int[2];
