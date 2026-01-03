@@ -210,14 +210,11 @@ public class Decision {
         return flag;
     }
     public static int Sigma(int[][] choices,int player_no,int round,int[] score){//good player
-        //System.out.println("function check 1");
         if(round<3){
-            //System.out.println("function check 2");
             return 1;
         }
         int player=player_no==1?0:1;
             if(score[player]>score[player_no]){
-                //System.out.println("function check 5");
                 return 0;
             }
             return 1;

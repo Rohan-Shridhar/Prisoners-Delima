@@ -27,3 +27,5 @@ The Prisoner's Dilemma is a classic thought experiment in game theory, a field t
 | 21 | **Sigma** | Cooperates for the first three rounds. After that, it defects if the opponent's score is higher than its own, otherwise it cooperates. |
 | 22 | **Joss (Win-Stay, Lose-Shift)** | Also known as Pavlov. It repeats its last move if it resulted in a high score (3 or 5 points), and switches its move if it resulted in a low score (0 or 1 point). |
 | 23 | **Random** | Makes a random choice each round with a 50% chance of cooperating and a 50% chance of defecting. |
+
+<img src="Outputs/tournament.png">
